@@ -125,7 +125,7 @@ $(document).ready(function () {
 
 <div id="introduction" class="section level3">
 <h3>Introduction</h3>
-<p>In this analysis we use accelerometer data to build a predictive model to classify exercise movement type. Specifically, each of six participants was given instructions for five different classes of performing a Unilateral Dumbbell Biceps Curl, and then asked to perform 10 repetitions of each method. The five exercise classes were: 1. exactly according to the specification (Class A), 2. throwing the elbows to the front (Class B), 3. lifting the dumbbell only halfway (Class C), 4. lowering the dumbbell only halfway (Class D) and 5. throwing the hips to the front (Class E) We use 3-fold cross-validation and a random forest model to predict the exercise class. Our model’s out-of-sample error rate is less than 0.5%.</p>
+<p>In this analysis we use accelerometer data to build a predictive model to classify exercise movement type. Specifically, each of six participants was given instructions for five different classes of performing a Unilateral Dumbbell Biceps Curl, and then asked to perform 10 repetitions of each method. The five exercise classes were: * exactly according to the specification (Class A), * throwing the elbows to the front (Class B), * lifting the dumbbell only halfway (Class C), * lowering the dumbbell only halfway (Class D) and * throwing the hips to the front (Class E) We use 3-fold cross-validation and a random forest model to predict the exercise class. Our model’s out-of-sample error rate is less than 0.5%.</p>
 </div>
 <div id="pre-processing-and-exploratory-data-analysis" class="section level3">
 <h3>Pre-processing and Exploratory Data Analysis</h3>
@@ -160,7 +160,7 @@ train_control &lt;- trainControl(method=&quot;cv&quot;, number=3)</code></pre>
 </div>
 <div id="out-of-sample-error-rate" class="section level3">
 <h3>Out-of-sample error rate</h3>
-<p>We see that our out-of-sample error rate is about 0.44%. Note that this assumes an <strong>mtry</strong> value of 27, which means that for each split 27 variables are sampled. Below is a confusion matrix as well.</p>
+<p>We see that our out-of-sample error rate is about 0.42%. Note that this assumes an <strong>mtry</strong> value of 2, which means that for each split 2 variables are sampled. 500 trees are creaeted. Below is a confusion matrix as well.</p>
 <pre class="r"><code>print(modFit)</code></pre>
 <pre><code>## Random Forest 
 ## 
@@ -208,7 +208,7 @@ pred</code></pre>
 </div>
 <div id="conclusion" class="section level3">
 <h3>Conclusion</h3>
-<p>We used accelerometer date to build a predictive model to classify exercise movement type amongst one classification for the correct movement and four others for incorrect movement. We pre-process and explore our model, and we use cross-validation. Our random forest model is estimated to have an out-of-sample error rate of 0.44%. We correctly predicted all 20 out of 20 possible testing observations.</p>
+<p>We used accelerometer date to build a predictive model to classify exercise movement type amongst one classification for the correct movement and four others for incorrect movement. We pre-process and explore our model, and we use cross-validation. Our random forest model is estimated to have an out-of-sample error rate of 0.42%. We correctly predicted all 20 out of 20 possible testing observations.</p>
 </div>
 <div id="citation" class="section level3">
 <h3>Citation</h3>

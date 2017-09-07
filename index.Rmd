@@ -12,11 +12,11 @@ to classify exercise movement type.  Specifically, each of six participants
 was given instructions for five different classes of performing a Unilateral 
 Dumbbell Biceps Curl, and then asked to perform 10 repetitions of each method.
 The five exercise classes were:
-1. exactly according to the specification (Class A), 
-2. throwing the elbows to the front (Class B), 
-3. lifting the dumbbell only halfway (Class C), 
-4. lowering the dumbbell only halfway (Class D) and 
-5. throwing the hips to the front (Class E)
+* exactly according to the specification (Class A), 
+* throwing the elbows to the front (Class B), 
+* lifting the dumbbell only halfway (Class C), 
+* lowering the dumbbell only halfway (Class D) and 
+* throwing the hips to the front (Class E)
 We use 3-fold cross-validation and a random forest
 model to predict the exercise class.  Our model's out-of-sample error rate
 is less than 0.5%.
@@ -93,15 +93,16 @@ Here we fit the random forest model.  We are predicting the **classe**
 variable based on all other remaining variables.  Note we included
 our cross-validation parameter as described above.
 
-```{r warning = FALSE, message = FALSE, cache = TRUE}
+```{r warning = FALSE, message = FALSE, cache = FALSE}
 modFit  <- train(classe ~., data=training_clean, trControl=train_control, method="rf")
 ```
 
 ###Out-of-sample error rate
 
-We see that our out-of-sample error rate is about 0.44%.  Note that
-this assumes an **mtry** value of 27, which means that for each split 27
-variables are sampled.  Below is a confusion matrix as well.
+We see that our out-of-sample error rate is about 0.42%.  Note that
+this assumes an **mtry** value of 2, which means that for each split 2
+variables are sampled.  500 trees are creaeted.  Below is a confusion 
+matrix as well.
 
 ```{r warning = FALSE, message = FALSE}
 print(modFit)
@@ -129,7 +130,7 @@ We used accelerometer date to build a predictive model to classify exercise
 movement type amongst one classification for the correct movement and four 
 others for incorrect movement.  We pre-process and explore our model, and
 we use cross-validation.  Our random forest model is estimated to have
-an out-of-sample error rate of 0.44%.  We correctly predicted all 20 out
+an out-of-sample error rate of 0.42%.  We correctly predicted all 20 out
 of 20 possible testing observations.
 
 ###Citation
