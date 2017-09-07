@@ -1,0 +1,144 @@
+---
+title: "Final Project - Practical Machine Learning"
+author: "Eric Thompson"
+date: "September 2017"
+output: html_document
+---
+
+###Introduction
+
+In this analysis we use accelerometer data to build a predictive model 
+to classify exercise movement type.  Specifically, each of six participants
+was given instructions for five different classes of performing a Unilateral 
+Dumbbell Biceps Curl, and then asked to perform 10 repetitions of each method.
+The five exercise classes were:
+1. exactly according to the specification (Class A), 
+2. throwing the elbows to the front (Class B), 
+3. lifting the dumbbell only halfway (Class C), 
+4. lowering the dumbbell only halfway (Class D) and 
+5. throwing the hips to the front (Class E)
+We use 3-fold cross-validation and a random forest
+model to predict the exercise class.  Our model's out-of-sample error rate
+is less than 0.5%.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("C://Users/etsaf/OneDrive/zzzCoursera/courseraPracticalMachineLearning/finalProject/practical_machine_learning")
+```
+
+###Pre-processing and Exploratory Data Analysis
+
+First we read our training and testing data sets and assign them as variables.
+```{r warning = FALSE, message = FALSE}
+library(caret)
+training <- read.csv("pml-training.csv")
+testing <- read.csv("pml-testing.csv")
+```
+
+Our training set has 19,622 observations of 160 variables, while the testing 
+set has 20 observations of these variables.  Using the **names()** function
+we can easily see that the variables are the same for both datasets except 
+for the fact that the **testing** data table has a **problem_id** 
+variable instead of a **classe** variable.  We discuss this in more detail 
+shortly.
+
+Also importantly, we notice that there are many columns containing
+mostly missing values (NAs). Since these columns consist overwhelmingly of 
+missing values and they are problematic for our model, we simply remove these 
+columns.
+
+We also remove columns 1 through 7 because they contain non-pertinent 
+information such as row index number, username and various timestamps.  We 
+are left with **testing_clean** and **training_clean** datasets after 
+removing these variables.
+
+```{r warning = FALSE, message = FALSE}
+training_clean <- training[, c(8:11, 37:49, 60:68, 84:86, 102, 
+                               113:124, 140, 151:160)]
+
+testing_clean <- testing[, c(8:11, 37:49, 60:68, 84:86, 102, 
+                                113:124, 140, 151:160)]
+```
+
+We also make sure our **testing_clean** data table matches our 
+**training_clean** data table by replacing the **problem_id** variable in 
+**testing_clean** with the **classe** variable instead.  This is what we're 
+trying to predict.
+
+```{r warning = FALSE, message = FALSE}
+testing_clean$classe <- testing_clean$problem_id
+testing_clean <- testing_clean[, -53]
+```
+
+###Cross-validation
+
+In order to avoid overfitting a random forest model, it's important to do
+cross-validation.  In this analysis we use 3-fold cross validation.  Typically
+we would choose 5-fold or 10-fold cross-validation, but processing time
+improves significantly when using 3 folds.
+
+At this point it's important we set our seed for reproducibility as well.
+
+```{r warning = FALSE, message = FALSE}
+set.seed(4756)
+train_control <- trainControl(method="cv", number=3)
+```
+
+Now we will be able to use this **train_control** parameter in our
+model construction.
+
+###Model Construction
+
+Here we fit the random forest model.  We are predicting the **classe**
+variable based on all other remaining variables.  Note we included
+our cross-validation parameter as described above.
+
+```{r warning = FALSE, message = FALSE, cache = TRUE}
+modFit  <- train(classe ~., data=training_clean, trControl=train_control, method="rf")
+```
+
+###Out-of-sample error rate
+
+We see that our out-of-sample error rate is about 0.44%.  Note that
+this assumes an **mtry** value of 27, which means that for each split 27
+variables are sampled.  Below is a confusion matrix as well.
+
+```{r warning = FALSE, message = FALSE}
+print(modFit)
+modFit$finalModel
+```
+
+###Predictions on Test Set
+
+As a final step, we attempt to predict the **classe** variable for the 20
+observations in the testing set.
+
+```{r warning = FALSE, message = FALSE}
+pred <- predict(modFit, testing_clean)
+pred
+```
+
+This provides us with a list of our predicted classes.  In this example
+we predicted 20 out of 20 testing observations correctly.  This is a great 
+result but not surprising given how low our out-of-sample error rate is
+estimated to be.
+
+###Conclusion
+
+We used accelerometer date to build a predictive model to classify exercise 
+movement type amongst one classification for the correct movement and four 
+others for incorrect movement.  We pre-process and explore our model, and
+we use cross-validation.  Our random forest model is estimated to have
+an out-of-sample error rate of 0.44%.  We correctly predicted all 20 out
+of 20 possible testing observations.
+
+###Citation
+
+Thank you to the authors below who have made this dataset available for
+analysis.
+
+Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative 
+Activity Recognition of Weight Lifting Exercises. Proceedings of 4th 
+International Conference in Cooperation with SIGCHI (Augmented Human '13) . 
+Stuttgart, Germany: ACM SIGCHI, 2013. 
+
